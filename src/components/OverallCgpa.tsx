@@ -9,6 +9,8 @@ interface SemesterInput {
 interface OverallCgpaProps {
   semesters: SemesterInput[];
   onChange: (id: string, field: "tgpa" | "credits", value: string) => void;
+  onAdd: () => void;
+  canAdd: boolean;
   onCalculate: () => void;
   result: string | null;
 }
@@ -16,23 +18,22 @@ interface OverallCgpaProps {
 export default function OverallCgpa({
   semesters,
   onChange,
+  onAdd,
+  canAdd,
   onCalculate,
   result,
 }: OverallCgpaProps) {
   return (
     <section className="card p-4 sm:p-6">
-      <h2 className="text-lg font-semibold text-white mb-3">
-        Overall 4-Year CGPA
-      </h2>
+      <h2 className="text-lg font-semibold text-white mb-3">Overall CGPA</h2>
       <p className="text-xs text-slate-400 mb-4">
-        Enter your TGPA for each of the 16 semesters (4 years × 4 semesters).{" "}
-        <br />
+        Add each semester's TGPA and credits (up to 8 semesters). <br />
         CGPA = Σ(TGPA × credits) / Σ credits — the same weighted formula.
       </p>
       <div className="space-y-2">
         {semesters.map((s, i) => {
-          const year = Math.floor(i / 4) + 1;
-          const semester = (i % 4) + 1;
+          const year = Math.floor(i / 2) + 1;
+          const semester = (i % 2) + 1;
           return (
             <div
               key={s.id}
@@ -64,13 +65,22 @@ export default function OverallCgpa({
           );
         })}
       </div>
-      <button className="mt-4 w-full btn-primary btn-gradient" onClick={onCalculate}>
+      <button
+        className="add-button mx-auto mt-4"
+        onClick={onAdd}
+        aria-label="Add semester"
+        disabled={!canAdd}
+      >
+        +
+      </button>
+      <button
+        className="mt-4 w-full btn-primary btn-gradient"
+        onClick={onCalculate}
+      >
         Calculate Overall CGPA
       </button>
       {result !== null && (
-        <p className="result-badge mt-3">
-          Overall 4-Year CGPA: {result}
-        </p>
+        <p className="result-badge mt-3">Overall 4-Year CGPA: {result}</p>
       )}
     </section>
   );

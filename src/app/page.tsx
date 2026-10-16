@@ -1,13 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import OverallCgpa from "@/components/OverallCgpa";
 import SubjectRow, {
   gradePointFromValue,
   type SubjectInput,
 } from "@/components/SubjectRow";
-import OverallCgpa from "@/components/OverallCgpa";
+import { useCallback, useState } from "react";
 
-const SEMESTER_COUNT = 4 * 4; // 4 years × 4 semesters
+const MAX_SEMESTERS = 4 * 2; // 4 years × 2 semesters
 
 export default function Home() {
   const [subjects, setSubjects] = useState<SubjectInput[]>([
@@ -19,13 +19,9 @@ export default function Home() {
   const [showHow, setShowHow] = useState(false);
   const [showOverall, setShowOverall] = useState(false);
 
-  const [semesters, setSemesters] = useState(
-    Array.from({ length: SEMESTER_COUNT }, (_, i) => ({
-      id: `sem-${i}`,
-      tgpa: "",
-      credits: "",
-    }))
-  );
+  const [semesters, setSemesters] = useState([
+    { id: "sem-0", tgpa: "", credits: "" },
+  ]);
   const [cgpaResult, setCgpaResult] = useState<string | null>(null);
 
   const addSubject = useCallback(() => {
@@ -45,13 +41,11 @@ export default function Home() {
   const updateSubject = useCallback(
     (id: string, field: keyof SubjectInput, value: string) => {
       setSubjects((prev) =>
-        prev.map((s) =>
-          s.id === id ? { ...s, [field]: value } : s
-        )
+        prev.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
       );
       setTgpaResult(null);
     },
-    []
+    [],
   );
 
   const calculateTgpa = useCallback(() => {
@@ -75,12 +69,20 @@ export default function Home() {
   const updateSemester = useCallback(
     (id: string, field: "tgpa" | "credits", value: string) => {
       setSemesters((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, [field]: value } : s))
+        prev.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
       );
       setCgpaResult(null);
     },
-    []
+    [],
   );
+
+  const addSemester = useCallback(() => {
+    setSemesters((prev) => {
+      if (prev.length >= MAX_SEMESTERS) return prev;
+      return [...prev, { id: `sem-${prev.length}`, tgpa: "", credits: "" }];
+    });
+    setCgpaResult(null);
+  }, []);
 
   const calculateCgpa = useCallback(() => {
     let totalWeight = 0;
@@ -166,9 +168,7 @@ export default function Home() {
             Calculate TGPA
           </button>
           {tgpaResult !== null && (
-            <p className="result-badge mt-4">
-              Estimated TGPA: {tgpaResult}
-            </p>
+            <p className="result-badge mt-4">Estimated TGPA: {tgpaResult}</p>
           )}
         </section>
 
@@ -210,13 +210,11 @@ export default function Home() {
                 <li>a GPA value (0 to 4)</li>
                 <li>expected marks (0 to 100)</li>
               </ul>
+              <li>TGPA = Σ(grade point × credit) / Σ credits</li>
               <li>
-                TGPA = Σ(grade point × credit) / Σ credits
-              </li>
-              <li>
-                Marks are converted to grade points (80+ = 4.00, 75 = 3.75, 70
-                = 3.50, 65 = 3.25, 60 = 3.00, 55 = 2.75, 50 = 2.50, 45 = 2.25,
-                40 = 2.00, below 40 = 0.00).
+                Marks are converted to grade points (80+ = 4.00, 75 = 3.75, 70 =
+                3.50, 65 = 3.25, 60 = 3.00, 55 = 2.75, 50 = 2.50, 45 = 2.25, 40
+                = 2.00, below 40 = 0.00).
               </li>
               <li>
                 Letters map to grade points (A/A+ = 4.00, A- = 3.75, B+ = 3.50,
@@ -231,6 +229,8 @@ export default function Home() {
           <OverallCgpa
             semesters={semesters}
             onChange={updateSemester}
+            onAdd={addSemester}
+            canAdd={semesters.length < MAX_SEMESTERS}
             onCalculate={calculateCgpa}
             result={cgpaResult}
           />
