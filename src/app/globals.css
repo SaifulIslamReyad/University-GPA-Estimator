@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root {
+  --background: linear-gradient(135deg, #0b0f19 0%, #1e1b4b 45%, #312e81 100%);
+  --foreground: #f8fafc;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: linear-gradient(135deg, #02040a 0%, #0f172a 45%, #1e1b4b 100%);
+    --foreground: #f1f5f9;
+  }
+}
+
+html,
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.input-field {
+  @apply w-full px-4 py-3 text-base border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-white/6 text-white placeholder-white/40 transition-all duration-150;
+}
+
+.input-compact {
+  @apply w-full px-3 py-2.5 text-sm border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-white/6 text-white placeholder-[11px] placeholder-white/40 transition-all duration-150;
+}
+
+.btn-primary {
+  @apply w-full min-h-[52px] px-4 py-3 text-base font-semibold text-white rounded-2xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 active:scale-[0.98] transition-all duration-150;
+}
+
+.btn-gradient {
+  background: linear-gradient(to right, #4f46e5, #8b5cf6, #f43f5e);
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(to right, #4338ca, #7c3aed, #e11d48);
+}
+
+.btn-outline {
+  @apply w-full min-h-[52px] px-4 py-3 text-base font-semibold text-white border border-white/20 rounded-xl shadow-sm hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 active:scale-[0.98] transition-all duration-150;
+}
+
+.add-button {
+  @apply inline-flex items-center justify-center min-h-[40px] min-w-[40px] px-6 rounded-full shadow-xl font-bold text-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 active:scale-[0.95] transition-all duration-150;
+  background: linear-gradient(to right, #4f46e5, #8b5cf6, #f43f5e);
+}
+
+.add-button:hover {
+  background: linear-gradient(to right, #4338ca, #7c3aed, #e11d48);
+}
+
+.delete-button {
+  @apply min-h-[40px] min-w-[40px] text-white/70 bg-white/6 rounded-lg hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-400 active:scale-[0.95] transition-all duration-150;
+}
+
+.card {
+  @apply bg-white/6 backdrop-blur-md border border-white/12 rounded-2xl shadow-2xl;
+}
+
+.result-badge {
+  @apply text-center text-lg font-bold text-indigo-100 bg-white/6 rounded-xl p-3 border border-indigo-500/30;
+}
